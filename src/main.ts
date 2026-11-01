@@ -335,15 +335,18 @@ async function contribute(j: Jar) {
       data: txTag(j.id, note),
     })
     status.textContent = t('sent')
+    let ok = false
     for (let i = 0; i < 20; i++) {
       await new Promise(r => setTimeout(r, 3000))
       const tx = await fetchTx(j.net, hash)
       if (tx && tx.executionResult !== false && (tx.confirmations ?? 0) >= 1) {
         status.className = 'status ok'
         status.innerHTML = `${t('confirmed')} <a href="${explorerTx(j.net, hash)}" target="_blank" rel="noopener">↗</a>`
+        ok = true
         break
       }
     }
+    if (!ok) { status.className = 'status err'; status.textContent = t('notConfirmed') }
     await refreshJar(j, true)
   }
   catch (e) {
