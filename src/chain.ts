@@ -147,6 +147,21 @@ interface RpcTx {
 const cache = new Map<string, { at: number, data: RpcTx[] }>()
 
 export async function fetchContributions(jar: Jar, force = false): Promise<Contribution[]> {
+  const first = await fetchContributionsOn(jar, jar.net, force)
+  if (first.length) return first
+  // A jar link may carry the wrong network (e.g. created before the host network was known):
+  // fall back to the other network and adopt it if contributions are found there.
+  const other: Network = jar.net === 'testnet' ? 'mainnet' : 'testnet'
+  try {
+    const alt = await fetchContributionsOn(jar, other, force)
+    if (alt.length) { jar.net = other; return alt }
+  }
+  catch { /* ignore */ }
+  return first
+}
+
+async function fetchContributionsOn(jar: Jar, net: Network, force = false): Promise<Contribution[]> {
+  jar = { ...jar, net }
   const key = `${jar.net}:${compactAddress(jar.o)}`
   const hit = cache.get(key)
   let txs: RpcTx[]

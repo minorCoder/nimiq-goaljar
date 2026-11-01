@@ -326,6 +326,8 @@ async function contribute(j: Jar) {
   if (accs.length === 1 && compactAddress(accs[0]) === compactAddress(j.o)) { status.textContent = t('self'); return }
   const btn = document.getElementById('pay') as HTMLButtonElement
   btn.disabled = true
+  const hostNet = getHostNetwork()
+  if (hostNet && hostNet !== j.net) j.net = hostNet
   status.className = 'status'
   status.textContent = t('sending')
   try {
