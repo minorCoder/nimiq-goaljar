@@ -352,7 +352,23 @@ async function contribute(j: Jar) {
     await refreshJar(j, true)
   }
   catch (e) {
-    if (NimiqProviderError.is(e) && e.type === 'PERMISSION_DENIED') status.textContent = t('cancelled')
+    const m = e instanceof Error ? e.message : String(e)
+    if (/outcome is unknown|may have been submitted/i.test(m)) {
+      // The wallet broadcast the payment but could not report the result; watch the chain instead.
+      status.className = 'status'
+      status.textContent = t('sent')
+      const before = (await fetchContributions(j, true).catch(() => [])).length
+      let ok = false
+      for (let i = 0; i < 20 && !ok; i++) {
+        await new Promise(r => setTimeout(r, 3000))
+        const list = await fetchContributions(j, true).catch(() => [])
+        if (list.length > before || (i > 0 && list.some(c => Date.now() - c.timestamp < 180_000))) ok = true
+      }
+      status.className = ok ? 'status ok' : 'status err'
+      status.textContent = ok ? t('confirmed') : t('notConfirmed')
+      await refreshJar(j, true)
+    }
+    else if (NimiqProviderError.is(e) && e.type === 'PERMISSION_DENIED') status.textContent = t('cancelled')
     else { status.className = 'status err'; status.textContent = t('failed', { msg: e instanceof Error ? e.message : String(e) }) }
   }
   finally { btn.disabled = false }
