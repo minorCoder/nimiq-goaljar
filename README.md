@@ -8,6 +8,18 @@ GoalJar is a Nimiq Pay Mini App for **shared savings goals**: group gifts, trip 
 - **5 languages.** English, 繁體中文, 简体中文, Español, Deutsch. The default follows `window.nimiqPay.language`.
 - **Testnet aware.** Uses `getHostNetwork()` to pick the mainnet or testnet RPC and explorer.
 
+## Demo
+
+▶️ **[Watch the 26 s demo video (docs/demo.mp4)](docs/demo.mp4)**: a real screen recording on a phone. GoalJar opens from Nimiq Pay → Mini Apps, the jar "tokyo" is at 81/100 NIM, the user contributes 10 NIM, approves with Connect + Confirm in Nimiq Pay, sees "Sent! Waiting for confirmation…" and then "Confirmed on-chain ✅". The total goes to 91 NIM and the contributor list updates.
+
+Live app: **https://nimiq-goaljar.vercel.app** (open it inside Nimiq Pay → Mini Apps).
+
+| Jar | Confirmed on-chain | Contributors | 简体中文 |
+|---|---|---|---|
+| <img src="docs/screenshot-jar.png" width="200" alt="Jar view"> | <img src="docs/screenshot-confirmed.png" width="200" alt="Contribution confirmed on-chain, 91 of 100 NIM"> | <img src="docs/screenshot-contributors.png" width="200" alt="Contributor leaderboard"> | <img src="docs/screenshot-list-zh.png" width="200" alt="Jar list in Simplified Chinese"> |
+
+**Tested on a real device (2026-11-02).** The full flow ran inside the Nimiq Pay app on **testnet**: creating a jar, contributing from several accounts, native Nimiq Pay approval, on-chain confirmation, and progress plus the leaderboard read back from the chain. The contributions shown above are real testnet transactions to the jar address.
+
 ## Develop
 ```bash
 npm install
