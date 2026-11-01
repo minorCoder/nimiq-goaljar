@@ -323,7 +323,7 @@ async function contribute(j: Jar) {
   const p = await ensureNimiq()
   if (!p) { status.textContent = t('needPay'); return }
   const accs = accounts.length ? accounts : await ensureAccounts()
-  if (accs.length === 1 && compactAddress(accs[0]) === compactAddress(j.o)) { status.textContent = t('self'); return }
+  void accs // Nimiq Pay may pay from a different internal address, so self-contributions are allowed (e.g. a personal savings vault)
   const btn = document.getElementById('pay') as HTMLButtonElement
   btn.disabled = true
   const hostNet = getHostNetwork()
